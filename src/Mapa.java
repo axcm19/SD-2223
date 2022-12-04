@@ -4,6 +4,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class Mapa {
 
     //------------------------------------------------------------------------------------------------------------------
+
     public static class Posicao {
 
         public int coord_x;
@@ -12,6 +13,7 @@ public class Mapa {
         //faltam métodos
 
     }
+
     //------------------------------------------------------------------------------------------------------------------
 
     // tamanho do mapa = N*N
