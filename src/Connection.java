@@ -1,3 +1,8 @@
+/*
+Classe que implementa a conexão que é estabelecida entre cliente e servidor.
+Por enquanto só serve para um unico cliente.
+ */
+
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.locks.ReentrantLock;

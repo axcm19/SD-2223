@@ -1,3 +1,9 @@
+/*
+Classe que serve para representar o mapa onde as trotinetes podem circular.
+É representado como uma matriz NxN onde N é um numero inteiro.
+O mapa tem uma lista de posições que são compostas por um par(x, y) onde x, y são inteiros.
+ */
+
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 

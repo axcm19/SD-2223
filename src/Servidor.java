@@ -8,6 +8,20 @@ public class Servidor {
     public static void main(String[] args) throws Exception {
         ServerSocket ss = new ServerSocket(12345);
 
+        final Contas lista_contas;
+        final Mapa locais;
+
+        // criação da lista de contas
+        lista_contas = new Contas();
+
+        // criação do mapa é feita aqui (em principio)
+        //locais =
+
+        lista_contas.addAccount("afonso_m","pass_afonso");
+        lista_contas.addAccount("vicente_c","pass_vicente");
+        lista_contas.addAccount("jose_f","pass_jose");
+        lista_contas.addAccount("pedro_p","pass_pedro");
+
         while(true) {
             Socket s = ss.accept();
             Connection c = new Connection(s);
