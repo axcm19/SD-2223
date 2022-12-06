@@ -17,6 +17,7 @@ public class Servidor {
         // criação do mapa é feita aqui (em principio)
         //locais =
 
+        // algumas contas já adicionadas
         lista_contas.addAccount("afonso_m","pass_afonso");
         lista_contas.addAccount("vicente_c","pass_vicente");
         lista_contas.addAccount("jose_f","pass_jose");
