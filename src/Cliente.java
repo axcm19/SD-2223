@@ -10,119 +10,72 @@ public class Cliente {
 
     public static void main(String[] args) throws Exception {
         Socket s = new Socket("localhost", 12345);
-        // falta criar um desmultiplexer
-        Connection c = new Connection(s);
 
-        Scanner input = new Scanner(System.in);
+        Demultiplexer m = new Demultiplexer(new Connection(s));
+        m.start();
 
-        String username = null;
-        //String password = null;
+        Thread[] threads = {
 
-        /*
-        // send requests
-        c.send(username.getBytes());   //p1
-        c.send(password.getBytes());   //p2
+                new Thread(() -> {
+                    try  {
+                        // send request
+                        m.send(1, "USER_1","Ola".getBytes());
+                        Thread.sleep(100);
+                        // get reply
+                        byte[] data = m.receive(1);
+                        System.out.println("(1) Reply: " + new String(data));
+                    }  catch (Exception ignored) {}
+                }),
 
-        // get replies
-        byte[] b1 = c.receive();
-        byte[] b2 = c.receive();
-        System.out.println("Server Reply: " + new String(b1));
-        System.out.println("Server Reply: " + new String(b2));
-        */
+                new Thread(() -> {
+                    try  {
+                        // send request
+                        m.send(3, "USER_2","Hello".getBytes());
+                        Thread.sleep(100);
+                        // get reply
+                        byte[] data = m.receive(3);
+                        System.out.println("(2) Reply: " + new String(data));
+                    }  catch (Exception ignored) {}
+                }),
 
+                new Thread(() -> {
+                    try  {
+                        // One-way
+                        m.send(0, "USER_3", ":-p".getBytes());
+                    }  catch (Exception ignored) {}
+                }),
 
-        while (username == null) {
-            System.out.println();
-            System.out.println("#################################################################################");
-            System.out.println();
-            System.out.print("---- TROTINETE MANAGER V.1 ----\n"
-                    + "\n"
-                    + "1) Iniciar sessão\n"
-                    + "2) Registar nova conta\n"
-                    + "\n"
-                    + "Escreva o valor corresponde à opção desejada: ");
+                new Thread(() -> {
+                    try  {
+                        // Get stream of messages until empty msg
+                        m.send(2, "USER_4", "ABCDE".getBytes());
+                        for (;;) {
+                            byte[] data = m.receive(2);
+                            if (data.length == 0)
+                                break;
+                            System.out.println("(4) From stream: " + new String(data));
+                        }
+                    } catch (Exception ignored) {}
+                }),
 
-            String option = input.nextLine();
+                new Thread(() -> {
+                    try  {
+                        // Get stream of messages until empty msg
+                        m.send(4, "USER_5", "123".getBytes());
+                        for (;;) {
+                            byte[] data = m.receive(4);
+                            if (data.length == 0)
+                                break;
+                            System.out.println("(5) From stream: " + new String(data));
+                        }
+                    } catch (Exception ignored) {}
+                })
 
-            if (option.equals("1")) {
-                System.out.println();
-                System.out.println("#################################################################################");
-                System.out.println();
-                System.out.print("---- INICIAR SESSÃO ----\n"
-                        + "\n"
-                        + "Introduza o seu nome de utilizador: ");
+        };
 
-                String write_username = input.nextLine();
-
-                System.out.print("Introduza a sua palavra-passe: ");
-
-                String write_password = input.nextLine();
-
-
-                c.send(write_username.getBytes());
-                c.send(write_password.getBytes());
-
-                byte[] b1 = c.receive();
-                byte[] b2 = c.receive();
-
-                System.out.println();
-                System.out.println("Sessão iniciada");
-                System.out.println("Server Reply - Username: " + new String(b1));
-                System.out.println("Server Reply - Password: " + new String(b2));
-                System.out.println();
-
-                /*
-                m.send(0, email, password.getBytes());
-                String response = new String(m.receive(0));
-                if (!response.startsWith("Erro")) {
-                    username = email;
-                }
-
-                System.out.println("\n" + response + "\n");
-
-                */
-
-            } else if (option.equals("2")) {
-                System.out.println();
-                System.out.println("#################################################################################");
-                System.out.println();
-                System.out.print("---- REGISTAR NOVA CONTA ----\n"
-                        + "\n"
-                        + "Introduza o seu nome de utilizador: ");
-
-                String write_username = input.nextLine();
-                System.out.print("Introduza a sua palavra-passe: ");
-                String write_password = input.nextLine();
-
-                c.send(write_username.getBytes());
-                c.send(write_password.getBytes());
-
-                byte[] b1 = c.receive();
-                byte[] b2 = c.receive();
-
-                System.out.println();
-                System.out.println("Adicionada nova conta");
-                System.out.println("Server Reply - Username: " + new String(b1));
-                System.out.println("Server Reply - Password: " + new String(b2));
-                System.out.println();
-
-                /*
-                m.send(1, email, password.getBytes());
-                String response = new String(m.receive(1));
-                if (!response.startsWith("Erro")) {
-                    username = email;
-                }
-
-                System.out.println("\n" + response + "\n");
-
-                */
-
-
-
-            }
-        }
-
-        c.close();
+        for (Thread t: threads) t.start();
+        for (Thread t: threads) t.join();
+        m.close();
 
     }
 

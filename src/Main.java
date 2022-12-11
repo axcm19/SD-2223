@@ -1,8 +1,7 @@
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
-    }
+/*
+ESTA CLASSE NÃO SERVE PARA NADA, SÓ ESTÁ CÁ POR ESTAR!!!
+*/
 
-    //em principio será colocado no Cliente e Servidor
+public class Main {
 
 }
