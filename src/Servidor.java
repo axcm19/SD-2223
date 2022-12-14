@@ -14,8 +14,9 @@ public class Servidor {
         // criação da lista de contas
         lista_contas = new Contas();
 
-        // criação do mapa é feita aqui (em principio)
-        //locais =
+        // iniciação do mapa é feita aqui 
+        locais = new Mapa();
+        locais.iniciaMapa();
 
         // algumas contas já adicionadas
         lista_contas.addAccount("afonso_m","pass_afonso");
