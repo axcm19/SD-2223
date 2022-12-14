@@ -30,10 +30,11 @@ public class Servidor {
             Runnable worker = () -> {
                 try (c) {
                     for (;;) {
-                        byte[] b = c.receive();
-                        String msg = new String(b);
+                        Frame f = c.receive();
+                        byte[] data = f.data;
+                        String msg = new String(data);
                         System.out.println("Replying to: " + msg);
-                        c.send(msg.getBytes());
+                        c.send(f);
                     }
                 } catch (Exception ignored) { }
             };
