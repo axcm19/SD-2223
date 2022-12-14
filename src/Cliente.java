@@ -14,67 +14,63 @@ public class Cliente {
         Demultiplexer m = new Demultiplexer(new Connection(s));
         m.start();
 
-        Thread[] threads = {
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
-                new Thread(() -> {
-                    try  {
-                        // send request
-                        m.send(1, "USER_1","Ola".getBytes());
-                        Thread.sleep(100);
-                        // get reply
-                        byte[] data = m.receive(1);
-                        System.out.println("(1) Reply: " + new String(data));
-                    }  catch (Exception ignored) {}
-                }),
+        String username = null;
 
-                new Thread(() -> {
-                    try  {
-                        // send request
-                        m.send(3, "USER_2","Hello".getBytes());
-                        Thread.sleep(100);
-                        // get reply
-                        byte[] data = m.receive(3);
-                        System.out.println("(2) Reply: " + new String(data));
-                    }  catch (Exception ignored) {}
-                }),
+        // AUTENTICAÇÃO
+        while(username == null){
+            System.out.print("--- PRO-SCOOTER v.1 ---\n"
+                    + "\n"
+                    + "Escolha uma das opções\n"
+                    + "1) Autenticar conta.\n"
+                    + "2) Registar nova conta.\n"
+                    + "\n"
+                    + "Opção ---> ");
 
-                new Thread(() -> {
-                    try  {
-                        // One-way
-                        m.send(0, "USER_3", ":-p".getBytes());
-                    }  catch (Exception ignored) {}
-                }),
+            String opcao_selecionada = input.readLine();
+            if(opcao_selecionada.equals("1")){
+                System.out.print("--- INICIAR SESSÃO ---\n"
+                        + "\n"
+                        + "Escreva o seu username ---> ");
 
-                new Thread(() -> {
-                    try  {
-                        // Get stream of messages until empty msg
-                        m.send(2, "USER_4", "ABCDE".getBytes());
-                        for (;;) {
-                            byte[] data = m.receive(2);
-                            if (data.length == 0)
-                                break;
-                            System.out.println("(4) From stream: " + new String(data));
-                        }
-                    } catch (Exception ignored) {}
-                }),
+                String name = input.readLine();
+                System.out.print("Escreva a sua password ---> ");
+                String pass = input.readLine();
 
-                new Thread(() -> {
-                    try  {
-                        // Get stream of messages until empty msg
-                        m.send(4, "USER_5", "123".getBytes());
-                        for (;;) {
-                            byte[] data = m.receive(4);
-                            if (data.length == 0)
-                                break;
-                            System.out.println("(5) From stream: " + new String(data));
-                        }
-                    } catch (Exception ignored) {}
-                })
+                // thread com tag 0 é de autenticação
+                // passamos a password como byte[]
+                m.send(0, name, pass.getBytes());
+                String resposta = new String(m.receive(0));
 
-        };
+                if(!resposta.startsWith("Erro")){
+                    username = name;
+                }
+                System.out.println("\n" + resposta + "\n");
 
-        for (Thread t: threads) t.start();
-        for (Thread t: threads) t.join();
+            }
+
+            else if(opcao_selecionada.equals("2")) {
+                System.out.print("--- REGISTAR NOVA CONTA ---\n"
+                        + "\n"
+                        + "Escreva o seu username ---> ");
+                String name = input.readLine();
+                System.out.print("Escreva a sua password ---> ");
+                String pass = input.readLine();
+
+                // thread com tag 1 é de registo
+                // passamos a password como byte[]
+                m.send(1, name, pass.getBytes());
+
+                String response = new String(m.receive(1));
+                if(!response.startsWith("Erro")) {
+                    username = name;
+                }
+                System.out.println("\n" + response + "\n");
+            }
+        }
+
+
         m.close();
 
     }

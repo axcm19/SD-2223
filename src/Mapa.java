@@ -36,13 +36,13 @@ public class Mapa {
         Posicao trotinete = new Posicao();
         int x = -1;
         int y = -1;
-        this.N=20;
+        this.N = 20;
         this.locais = new ArrayList<Posicao>();
-        while(x<N){
-            x = x+3;
+        while(x < N){
+            x = x + 3;
             trotinete.coord_x = x;
-            while(y<N){
-                y = y+3;
+            while(y < N){
+                y = y + 3;
                 trotinete.coord_y = y;
                 locais.add(trotinete);
             }
