@@ -70,6 +70,33 @@ public class Cliente {
             }
         }
 
+        // após registo ou autenticação
+
+        boolean sair = false;
+        while(!sair){
+            System.out.print("--- PRO-SCOOTER v.1 ---\n"
+                    + "\n"
+                    + "Escolha uma das opções\n"
+                    + "1) Ver a minha localização.\n"
+                    + "2) Ver trotinetes livres.\n"
+                    + "3) Reservar trotinete.\n"
+                    + "4) Minhas recompensas.\n"
+                    + "5) Opções de notificações.\n"
+                    + "\n"
+                    + "0) SAIR.\n"
+                    + "\n"
+                    + "Opção ---> ");
+            String opcao_selecionada = input.readLine();
+
+            // sair do programa --> a tag é 100
+            switch(opcao_selecionada) {
+                case "0":
+                    m.send(100, username, new byte[0]);
+                    sair = true;
+                    break;
+            }
+        }
+
 
         m.close();
 

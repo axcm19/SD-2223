@@ -1,7 +1,11 @@
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.AbstractMap;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 public class Servidor {
 
@@ -80,7 +84,7 @@ public class Servidor {
                         //--------------------------------------------------------------------------------------
 
                         // thread com tag 1 é de registo
-                        if(frame.tag == 1){
+                        else if(frame.tag == 1){
                             System.out.println("Tentativa de registo por cliente");
                             String name = frame.username;
 
@@ -111,6 +115,26 @@ public class Servidor {
                         }
 
                         //--------------------------------------------------------------------------------------
+
+                        // thread com tag 100 é para sair do programa
+                        else if (frame.tag == 100) {
+
+                            login_lock.lock();
+                            try {
+                                clientes_logados.remove(frame.username);
+                            }
+                            finally {
+                                login_lock.unlock();
+                            }
+                        }
+
+                        //--------------------------------------------------------------------------------------
+
+
+                        if(login_yes){
+
+                        }
+
 
                     }
                 } catch (Exception ignored) { }

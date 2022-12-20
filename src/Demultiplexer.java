@@ -9,8 +9,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Demultiplexer implements AutoCloseable {
 
-    private Connection conn = null;
-    private final Lock lock_demu = new ReentrantLock();
+    private final Connection conn;
+    private final ReentrantLock lock_demu = new ReentrantLock();
     private final Map<Integer, Entry> map = new HashMap<>();
     private IOException exception = null;
 
@@ -48,7 +48,7 @@ public class Demultiplexer implements AutoCloseable {
             } catch (IOException e) {
                 exception = e;
             }
-        });
+        }).start();
     }
 
     public void send(Frame frame) throws IOException {
@@ -61,20 +61,27 @@ public class Demultiplexer implements AutoCloseable {
 
     public byte[] receive(int tag) throws IOException, InterruptedException {
         lock_demu.lock();
+        Entry e;
         try{
-            Entry e = map.get(tag);
+            e = map.get(tag);
             if (e == null) {
                 e = new Entry();
                 map.put(tag, e);
             }
-            while(e.queue.isEmpty() && exception != null){
+            e.waiters++;
+            while(true) {
+                if (!e.queue.isEmpty()) {
+                    e.waiters--;
+                    byte[] resposta = e.queue.poll();
+                    if(e.waiters == 0 && e.queue.isEmpty()){
+                        map.remove(tag);
+                    }
+                    return resposta;
+                }
+                if (exception != null) {
+                    throw exception;
+                }
                 e.cond.await();
-            }
-            if(!e.queue.isEmpty()){
-                return e.queue.poll();
-            }
-            else{
-                throw exception;
             }
         }
         finally {

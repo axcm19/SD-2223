@@ -43,8 +43,8 @@ public class Mapa {
 
     // tamanho do mapa = N*N
     private int N = 20;
-    private int nsector = 16;
-    private int tamanhosector = 5;
+    private int nsector = 16;   // 16 sectores
+    private int tamanhosector = 5;  // 5*5 posiçoes
     private int sector = 0;
     private int numTroti = 6; // por enquanto só 6 trotinetes
     private HashMap<Integer, List<Posicao>> locais; //alterar o formato
@@ -87,7 +87,7 @@ public class Mapa {
             if(p1.coord_y == p2.coord_y) return true;
         return false;
     }
-
+/*
     //pegar posiçao do user e tirar do mapa
     //mudar para os hashmap
     public void reservaTrotinete(Posicao p, Mapa m){
@@ -115,6 +115,6 @@ public class Mapa {
         //envia para o cliente o custo da viagem
     }
     //faltam métodos
-
+*/
 
 }

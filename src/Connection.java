@@ -10,21 +10,21 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Connection implements AutoCloseable {
 
-        private final Socket socket;
+        //private final Socket socket;
         private final DataInputStream is;
         private final DataOutputStream os;
-        private ReentrantLock sendLock = new ReentrantLock();   // lock para operações de envio de frames
-        private ReentrantLock receiveLock = new ReentrantLock();    // lock para operações de receção de frames
+        private final ReentrantLock sendLock = new ReentrantLock();   // lock para operações de envio de frames
+        private final ReentrantLock receiveLock = new ReentrantLock();    // lock para operações de receção de frames
 
         public Connection(Socket socket) throws IOException {
-            this.socket = socket;
+            //this.socket = socket;
             this.is = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
             this.os = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
         }
 
         public void send(Frame frame) throws IOException {
             try{
-                this.sendLock.lock();
+                sendLock.lock();
                 this.os.writeInt(frame.tag); // lê a tag da frame
                 this.os.writeUTF(frame.username);
                 this.os.writeInt(frame.data.length); // precisa de saber o tamanho Int do array de bytes
@@ -32,7 +32,7 @@ public class Connection implements AutoCloseable {
                 this.os.flush();
             }
             finally {
-                this.sendLock.unlock();
+                sendLock.unlock();
             }
         }
 
@@ -51,7 +51,7 @@ public class Connection implements AutoCloseable {
             byte[] data;
 
             try {
-                this.receiveLock.lock();
+                receiveLock.lock();
                 tag = this.is.readInt();    // lê a tag
                 username = this.is.readUTF();    // lê o username
                 int size = this.is.readInt();   // lê o tamanho dos dados que recebe
@@ -61,14 +61,15 @@ public class Connection implements AutoCloseable {
                 this.is.readFully(data); // só retorna quando conseguir ler a mensagem completa
             }
             finally {
-                this.receiveLock.unlock();
+                receiveLock.unlock();
             }
             // finalmente constroi uma nova frame com os dados obtidos
             return new Frame(tag, username, data);
         }
 
         public void close() throws IOException {
-            this.socket.close();
+            this.is.close();
+            this.os.close();
         }
 
 }
