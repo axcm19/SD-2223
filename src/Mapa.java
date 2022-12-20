@@ -87,7 +87,7 @@ public class Mapa {
             if(p1.coord_y == p2.coord_y) return true;
         return false;
     }
-/*
+
     //pegar posiçao do user e tirar do mapa
     //mudar para os hashmap
     public void reservaTrotinete(Posicao p, Mapa m){
@@ -115,6 +115,6 @@ public class Mapa {
         //envia para o cliente o custo da viagem
     }
     //faltam métodos
-*/
+
 
 }
