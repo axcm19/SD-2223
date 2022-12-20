@@ -46,6 +46,7 @@ public class Mapa {
     private int nsector = 16;
     private int tamanhosector = 5;
     private int sector = 0;
+    private int numTroti = 6; // por enquanto só 6 trotinetes
     private HashMap<Integer, List<Posicao>> locais; //alterar o formato
     public ReentrantReadWriteLock lock_mapa = new ReentrantReadWriteLock();
 
@@ -89,12 +90,12 @@ public class Mapa {
 
     //pegar posiçao do user e tirar do mapa
     //mudar para os hashmap
-    public void reservaTrotinete(Posicao p,Mapa m){
+    public void reservaTrotinete(Posicao p, Mapa m){
         Posicao temp = new Posicao();
         temp.coord_x = 0;
         temp.coord_y = 0;
-        for(int i = 0;i<locais.size();i++){
-            if(calculaDistancia(p,locais.get(i))<calculaDistancia(p,temp)){
+        for(int i = 0; i < locais.size(); i++){
+            if(calculaDistancia(p, locais.get(i)) < calculaDistancia(p, temp)){
                 temp = locais.get(i);
             }
             //faltam coisas
@@ -103,9 +104,9 @@ public class Mapa {
 
     //tira posicao inicial da lista de posiçoes do mapa e poe posiçao final na lista
     //mudar para os hashmap
-    public void desloca(Posicao inicio,Posicao fim,Mapa m){
-        for(int i = 0;i<m.numTroti;i++){
-            if(comparaPosicoes(inicio,m.locais.get(i))==true){
+    public void desloca(Posicao inicio, Posicao fim, Mapa m){
+        for(int i = 0; i < m.numTroti; i++){
+            if(comparaPosicoes(inicio, m.locais.get(i)) == true){
                 m.locais.remove(i);
             }
         }
