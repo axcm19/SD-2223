@@ -1,8 +1,6 @@
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.AbstractMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -112,6 +110,30 @@ public class Servidor {
                                 lista_contas.lock_Contas.writeLock().unlock();
                             }
 
+                        }
+
+                        //--------------------------------------------------------------------------------------
+
+                        // thread com tag 2 é para listar as trotinetes livres dados uma posição e uma distância
+                        else if (frame.tag == 2) {
+                            System.out.println("Listar trotinetes livres");
+
+                            // retirar a informação contina na frame
+                            String[] info = new String(frame.data).split(" ");
+                            Mapa.Posicao pos = new Mapa.Posicao(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
+                            int distancia_procura  = Integer.parseInt(info[2]);
+
+                            String trotinetes_livres = "";
+
+                            locais.lock_mapa.readLock().lock();
+                            try {
+                                trotinetes_livres = locais.lista_trotinetes(pos, distancia_procura);
+                                c.send(frame.tag, "", String.valueOf(trotinetes_livres).getBytes());
+                            }
+                            finally {
+                                locais.lock_mapa.readLock().unlock();
+                            }
+                            System.out.println("Listagem devolvida com sucesso");
                         }
 
                         //--------------------------------------------------------------------------------------

@@ -47,7 +47,9 @@ public class Mapa {
     private int tamanhosector = 5;  // 5*5 posiçoes
     private int sector = 0;
     private int numTroti = 6; // por enquanto só 6 trotinetes
-    private HashMap<Integer, List<Posicao>> locais; //alterar o formato
+
+    private HashMap<Integer, Trotinete> trotinetes; // <ID, Trotinete>
+    private HashMap<Integer, List<Posicao>> locais; // <Numero do sector, Lista de posiçoes do sector>    alterar o formato
     public ReentrantReadWriteLock lock_mapa = new ReentrantReadWriteLock();
 
     //inicia o mapa    nao sei se esta certo
@@ -71,8 +73,29 @@ public class Mapa {
             locais.put(i,posicoes);
             i++;
         }
+
+
+        // inicializa trotinetes
+
+        Trotinete t1 = new Trotinete(1, true, 5,3 );
+        Trotinete t2 = new Trotinete(2, true, 1,2 );
+        Trotinete t3 = new Trotinete(3, true, 2,19 );
+        Trotinete t4 = new Trotinete(4, false, 15,9 );
+        Trotinete t5 = new Trotinete(5, true, 16,7 );
+        Trotinete t6 = new Trotinete(6, true, 4,20 );
+
+
+        this.trotinetes = new HashMap<>();
+        trotinetes.put(t1.id, t1);
+        trotinetes.put(t2.id, t2);
+        trotinetes.put(t3.id, t3);
+        trotinetes.put(t4.id, t4);
+        trotinetes.put(t5.id, t5);
+        trotinetes.put(t6.id, t6);
+
         Mapa mapa = new Mapa();
         mapa.locais = this.locais;
+        mapa.trotinetes = this.trotinetes;
         return mapa;
     }
 
@@ -114,6 +137,28 @@ public class Mapa {
         int custo = calculaDistancia(inicio,fim);
         //envia para o cliente o custo da viagem
     }
+
+
+
+    //faz a listagem de todas as trotinetes livres
+    public String lista_trotinetes(Posicao pos, int distancia_procura){
+        String livres;
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nTrotinetes livres: ");
+
+        for(int ID : trotinetes.keySet()){
+            Trotinete t = trotinetes.get(ID);
+            Posicao t_pos = new Posicao(t.pos.coord_x, t.pos.coord_y);  // REDUNDANTE!! Nao é necessario criar nova posição mas cria-se na mesma
+            int dist = calculaDistancia(pos, t_pos);
+
+            if(dist <= distancia_procura && t.ocupada == true){
+                sb.append("\nID: " + t.id + " ; " + "(" + t.pos.coord_x + ", " + t.pos.coord_y + ");");
+            }
+        }
+        livres = String.valueOf(sb);
+        return livres;
+    }
+
     //faltam métodos
 
 
