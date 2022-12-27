@@ -122,7 +122,9 @@ public class Cliente {
                         catch (IllegalStateException e){
                             System.out.println("\nErro");
                         }
+
                     }
+                    break;
 
                 case "2":
                     while(true){
@@ -147,6 +149,7 @@ public class Cliente {
                         catch (IllegalStateException e){
                             System.out.println("\nErro");
                         }
+                        break;
                     }
 
             }
