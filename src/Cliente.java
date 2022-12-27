@@ -124,6 +124,31 @@ public class Cliente {
                         }
                     }
 
+                case "2":
+                    while(true){
+                        System.out.print("--- Reservar uma trotinete ---\n"
+                                + "\n"
+                                + "Introduza em qual localização quer reservar: ");
+                        System.out.print("\nCoordenada X ---> ");
+                        String coor_x = input.readLine();
+                        System.out.print("\nCoordenada Y ---> ");
+                        String coor_y = input.readLine();
+                        try {
+                            Mapa.Posicao pos = new Mapa.Posicao();
+                            pos.coord_x = Integer.parseInt(coor_x);
+                            pos.coord_y = Integer.parseInt(coor_y);
+                            m.send(3, username, String.format("%d %d", pos.coord_x, pos.coord_y).getBytes());
+
+                            String response = new String(m.receive(3));
+                            System.out.println("\n" + response + "\n");
+
+                            break;
+                        }
+                        catch (IllegalStateException e){
+                            System.out.println("\nErro");
+                        }
+                    }
+
             }
         }
 

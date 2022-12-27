@@ -60,7 +60,7 @@ public class Mapa {
         int i = 1;
         List<Posicao> posicoes = new ArrayList<>();
         this.locais = new HashMap<>();
-        while(i <= nsector){
+        /*while(i <= nsector){
             while(x<tamanhosector){
                 x = x+2;
                 trotinete.coord_x = x;
@@ -72,7 +72,7 @@ public class Mapa {
             }
             locais.put(i,posicoes);
             i++;
-        }
+        }*/
 
 
         // inicializa trotinetes
@@ -113,18 +113,17 @@ public class Mapa {
 
     //pegar posiçao do user e tirar do mapa
     //mudar para os hashmap
-    public void reservaTrotinete(Posicao p, Mapa m){
-        Posicao temp = new Posicao();
-        temp.coord_x = 0;
-        temp.coord_y = 0;
-        for(int i = 0; i < locais.size(); i++){
-            if(calculaDistancia(p, locais.get(i)) < calculaDistancia(p, temp)){
-                temp = locais.get(i);
+    public boolean reservaTrotinete(Posicao p){
+        for(int ID : trotinetes.keySet()){
+            Trotinete t = trotinetes.get(ID);
+            if(comparaPosicoes(p,t.pos)){
+                t.ocupada = false;
+                return true;
             }
-            //faltam coisas
         }
+        return false;
     }
-
+    /*
     //tira posicao inicial da lista de posiçoes do mapa e poe posiçao final na lista
     //mudar para os hashmap
     public void desloca(Posicao inicio, Posicao fim, Mapa m){
@@ -137,7 +136,7 @@ public class Mapa {
         int custo = calculaDistancia(inicio,fim);
         //envia para o cliente o custo da viagem
     }
-
+*/
 
 
     //faz a listagem de todas as trotinetes livres

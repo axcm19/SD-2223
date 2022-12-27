@@ -138,6 +138,37 @@ public class Servidor {
 
                         //--------------------------------------------------------------------------------------
 
+                        // thread com tag 3 é para reservar uma trotinete dada uma posicao
+                        else if (frame.tag == 3) {
+                            System.out.println("Reservar uma trotinete");
+
+                            // retirar a informação contina na frame
+                            String[] info = new String(frame.data).split(" ");
+                            Mapa.Posicao pos = new Mapa.Posicao(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
+
+                            boolean reserva = false;
+                            String ret;
+
+                            locais.lock_mapa.readLock().lock();
+                            try {
+                                reserva = locais.reservaTrotinete(pos);
+                                if(reserva == true) {
+                                    ret = "Reserva feita com sucesso";
+                                    c.send(frame.tag, "", String.valueOf(ret).getBytes());
+                                }
+                                else {
+                                    ret = "Reserva não efetuada";
+                                    c.send(frame.tag, "", String.valueOf(ret).getBytes());
+                                }
+                            }
+                            finally {
+                                locais.lock_mapa.readLock().unlock();
+                            }
+                            System.out.println("Tentativa de reserva devolvida com sucesso");
+                        }
+
+                        //--------------------------------------------------------------------------------------
+
                         // thread com tag 100 é para sair do programa
                         else if (frame.tag == 100) {
 
