@@ -113,15 +113,27 @@ public class Mapa {
 
     //pegar posiçao do user e tirar do mapa
     //mudar para os hashmap
-    public boolean reservaTrotinete(Posicao p){
+    public int reservaTrotinete(int Id){
         for(int ID : trotinetes.keySet()){
             Trotinete t = trotinetes.get(ID);
-            if(comparaPosicoes(p,t.pos)){
+            if(Id == t.id){
                 t.ocupada = false;
-                return true;
+                return t.id;
             }
         }
-        return false;
+        return -1;
+    }
+
+    public int desloca(int Id,Posicao p){
+        for(int ID : trotinetes.keySet()){
+            Trotinete t = trotinetes.get(ID);
+            if(Id == t.id){
+                t.pos = p;
+                t.ocupada = true;
+                return 1;
+            }
+        }
+        return -1;
     }
     /*
     //tira posicao inicial da lista de posiçoes do mapa e poe posiçao final na lista

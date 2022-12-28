@@ -1,3 +1,4 @@
+import java.beans.IntrospectionException;
 import java.net.Socket;
 import java.util.Scanner;
 import java.io.BufferedReader;
@@ -5,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.time.*;
 
 public class Cliente {
 
@@ -17,6 +19,9 @@ public class Cliente {
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
         String username = null;
+        int id_trotinete = -1;
+        LocalTime inicio = null;
+        LocalTime fim;
 
         // AUTENTICAÇÃO
         while(username == null){
@@ -81,6 +86,7 @@ public class Cliente {
                     + "2) Reservar trotinete.\n"
                     + "3) Minhas recompensas.\n"
                     + "4) Opções de notificações.\n"
+                    + "5) Deslocar trotinete.\n"
                     + "\n"
                     + "0) SAIR.\n"
                     + "\n"
@@ -130,33 +136,65 @@ public class Cliente {
                     while(true){
                         System.out.print("--- Reservar uma trotinete ---\n"
                                 + "\n"
-                                + "Introduza em qual localização quer reservar: ");
-                        System.out.print("\nCoordenada X ---> ");
-                        String coor_x = input.readLine();
-                        System.out.print("\nCoordenada Y ---> ");
-                        String coor_y = input.readLine();
+                                + "Introduza o id da trotinete que quer reservar: ");
+                        System.out.print("\nId ---> ");
+                        String id = input.readLine();
                         try {
-                            Mapa.Posicao pos = new Mapa.Posicao();
-                            pos.coord_x = Integer.parseInt(coor_x);
-                            pos.coord_y = Integer.parseInt(coor_y);
-                            m.send(3, username, String.format("%d %d", pos.coord_x, pos.coord_y).getBytes());
+                            m.send(3, username, String.format("%d", Integer.parseInt(id)).getBytes());
 
                             String response = new String(m.receive(3));
                             System.out.println("\n" + response + "\n");
+                            id_trotinete = Integer.valueOf(new String(m.receive(3)));
+                            inicio = LocalTime.now();
 
                             break;
                         }
                         catch (IllegalStateException e){
                             System.out.println("\nErro");
                         }
-                        break;
-                    }
 
+                    }
+                    break;
+                case "5":
+                    while(true){
+                        System.out.print("--- Deslocar uma trotinete ---\n"
+                                + "\n"
+                                + "Introduza o id da trotinete que quer deslocar: ");
+                        System.out.print("\nId ---> ");
+                        String id = input.readLine();
+                        System.out.println("Introduza a posição onde vai deslocar");
+                        System.out.print("\nCoordenada X ---> ");
+                        String coor_x = input.readLine();
+                        System.out.print("\nCoordenada Y ---> ");
+                        String coor_y = input.readLine();
+                        try {
+                            int Id = Integer.parseInt(id);
+                            Mapa.Posicao pos = new Mapa.Posicao();
+                            pos.coord_x = Integer.parseInt(coor_x);
+                            pos.coord_y = Integer.parseInt(coor_y);
+                            m.send(6, username, String.format("%d %d %d",Id, pos.coord_x, pos.coord_y).getBytes());
+
+                            String response = new String(m.receive(6));
+                            System.out.println("\n" + response + "\n");
+
+                            fim = LocalTime.now();
+                            long tempo = java.time.Duration.between(inicio,fim).getSeconds();
+                            System.out.println(tempo);
+
+                            break;
+                        }
+                        catch (IllegalStateException e){
+                            System.out.println("\nErro");
+                        }
+
+                    }
+                    break;
             }
         }
 
 
         m.close();
+
 
     }
 

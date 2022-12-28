@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
+import java.time.*;
 
 public class Servidor {
 
@@ -144,17 +145,18 @@ public class Servidor {
 
                             // retirar a informação contina na frame
                             String[] info = new String(frame.data).split(" ");
-                            Mapa.Posicao pos = new Mapa.Posicao(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
+                            int Id = Integer.parseInt(info[0]);
 
-                            boolean reserva = false;
+                            int reserva = -1;
                             String ret;
 
                             locais.lock_mapa.readLock().lock();
                             try {
-                                reserva = locais.reservaTrotinete(pos);
-                                if(reserva == true) {
-                                    ret = "Reserva feita com sucesso";
+                                reserva = locais.reservaTrotinete(Id);
+                                if(reserva >= 0) {
+                                    ret = "Reserva de trotinete de id " +reserva+" feita com sucesso";
                                     c.send(frame.tag, "", String.valueOf(ret).getBytes());
+                                    c.send(frame.tag, "", String.valueOf(reserva).getBytes());
                                 }
                                 else {
                                     ret = "Reserva não efetuada";
@@ -165,6 +167,38 @@ public class Servidor {
                                 locais.lock_mapa.readLock().unlock();
                             }
                             System.out.println("Tentativa de reserva devolvida com sucesso");
+                        }
+
+                        //--------------------------------------------------------------------------------------
+
+                        // thread com tag 6 é para deslocar uma trotinete dado o id da trotinete e a posicao
+                        else if (frame.tag == 6) {
+                            System.out.println("Reservar uma trotinete");
+
+                            // retirar a informação contina na frame
+                            String[] info = new String(frame.data).split(" ");
+                            int id = Integer.parseInt(info[0]);
+                            Mapa.Posicao pos = new Mapa.Posicao(Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+
+                            int ret = -1;
+                            String ret_S;
+
+                            locais.lock_mapa.readLock().lock();
+                            try {
+                                ret = locais.desloca(id,pos);
+                                if(ret >= 0) {
+                                    ret_S = "Deslocaçao de trotinete feita com sucesso";
+                                    c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
+                                }
+                                else {
+                                    ret_S = "Deslocamento não efetuada";
+                                    c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
+                                }
+                            }
+                            finally {
+                                locais.lock_mapa.readLock().unlock();
+                            }
+                            System.out.println("Tentativa de deslocamento devolvida com sucesso");
                         }
 
                         //--------------------------------------------------------------------------------------
