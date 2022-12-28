@@ -151,21 +151,6 @@ public class Mapa {
         }
         return -1;
     }
-    /*
-    //tira posicao inicial da lista de posiçoes do mapa e poe posiçao final na lista
-    //mudar para os hashmap
-    public void desloca(Posicao inicio, Posicao fim, Mapa m){
-        for(int i = 0; i < m.numTroti; i++){
-            if(comparaPosicoes(inicio, m.locais.get(i)) == true){
-                m.locais.remove(i);
-            }
-        }
-        m.locais.add(fim);
-        int custo = calculaDistancia(inicio,fim);
-        //envia para o cliente o custo da viagem
-    }
-*/
-
 
     //faz a listagem de todas as trotinetes livres
     public String lista_trotinetes(Posicao pos, int distancia_procura){
