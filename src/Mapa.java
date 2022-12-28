@@ -37,6 +37,22 @@ public class Mapa {
         }
         //faltam métodos
 
+
+        public int getCoord_x() {
+            return coord_x;
+        }
+
+        public void setCoord_x(int coord_x) {
+            this.coord_x = coord_x;
+        }
+
+        public int getCoord_y() {
+            return coord_y;
+        }
+
+        public void setCoord_y(int coord_y) {
+            this.coord_y = coord_y;
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
