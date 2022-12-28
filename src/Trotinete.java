@@ -24,4 +24,29 @@ public class Trotinete {
 
     //faltam métodos
 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isOcupada() {
+        return ocupada;
+    }
+
+    public void setOcupada(boolean ocupada) {
+        this.ocupada = ocupada;
+    }
+
+    public Mapa.Posicao getPos() {
+        return pos;
+    }
+
+    public void setPos(Mapa.Posicao pos) {
+        this.pos = pos;
+    }
 }
+
