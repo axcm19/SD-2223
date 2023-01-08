@@ -144,7 +144,7 @@ public class Cliente {
 
                             String response = new String(m.receive(3));
                             System.out.println("\n" + response + "\n");
-                            id_trotinete = Integer.valueOf(new String(m.receive(3)));
+                            id_trotinete = Integer.parseInt(response);
                             inicio = LocalTime.now();
 
                             break;
@@ -182,31 +182,39 @@ public class Cliente {
                         System.out.print("--- Deslocar uma trotinete ---\n"
                                 + "\n"
                                 + "Introduza o codigo da reserva: ");
+
                         System.out.print("\nCodigo ---> ");
-                        String codigo = input.readLine();
-                        System.out.println("Introduza a posição onde vai deslocar");
-                        System.out.print("\nCoordenada X ---> ");
-                        String coor_x = input.readLine();
-                        System.out.print("\nCoordenada Y ---> ");
-                        String coor_y = input.readLine();
-                        try {
-                            int Codigo = Integer.parseInt(codigo);
-                            Mapa.Posicao pos = new Mapa.Posicao();
-                            pos.coord_x = Integer.parseInt(coor_x);
-                            pos.coord_y = Integer.parseInt(coor_y);
-                            m.send(6, username, String.format("%d %d %d",Codigo, pos.coord_x, pos.coord_y).getBytes());
+                        int codigo = Integer.parseInt(input.readLine());
 
-                            String response = new String(m.receive(6));
-                            System.out.println("\n" + response + "\n");
+                        if(codigo == id_trotinete) {
 
-                            fim = LocalTime.now();
-                            long tempo = java.time.Duration.between(inicio,fim).getSeconds();
-                            System.out.println(tempo);
+                            System.out.println("Introduza a posição onde vai deslocar");
+                            System.out.print("\nCoordenada X ---> ");
+                            String coor_x = input.readLine();
+                            System.out.print("\nCoordenada Y ---> ");
+                            String coor_y = input.readLine();
+                            try {
+                                int codigo_reserva = codigo;
+                                Mapa.Posicao pos = new Mapa.Posicao();
+                                pos.coord_x = Integer.parseInt(coor_x);
+                                pos.coord_y = Integer.parseInt(coor_y);
+                                m.send(6, username, String.format("%d %d %d", codigo_reserva, pos.coord_x, pos.coord_y).getBytes());
 
-                            break;
+                                String response = new String(m.receive(6));
+                                System.out.println("\n" + response + "\n");
+
+                                fim = LocalTime.now();
+                                long tempo = java.time.Duration.between(inicio, fim).getSeconds();
+                                double preco = tempo/200.0;
+                                System.out.println("Preço da viagem: " + preco+" euros.\n");
+
+                                break;
+                            } catch (IllegalStateException e) {
+                                System.out.println("\nErro");
+                            }
                         }
-                        catch (IllegalStateException e){
-                            System.out.println("\nErro");
+                        else{
+                            System.out.println("Erro");
                         }
 
                     }

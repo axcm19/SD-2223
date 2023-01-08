@@ -84,20 +84,7 @@ public class Recompensa {
 
 
 
-    public Recompensa geraRecompensa(Mapa.Posicao A, Mapa.Posicao B) {
-        // PARA O LOCAL A:
-        // iteracao pela lista de trotinetes -> ver as livres
-        // das livres -> uma a uma ver se tem trotinetes dentro do raio
-        // esta no raio : distancia de manhaten da coord da Trotinetes com pos A e depois B
 
-        // PARA O LOCAL B:
-        // gerar Pos random e ver se tem alguma dentro do raio
-
-        Integer valor = formulaValor(A,B);
-        Recompensa recompensa = new Recompensa(A,B,valor);
-
-        return recompensa;
-    }
 
     /**
      * metodo que devolve a Pos de um possivel local A para a recompensa
@@ -113,6 +100,19 @@ public class Recompensa {
         }
         return livres.get(i).getPos();
     }
+
+    public List<Mapa.Posicao> geraLocaisA(List<Trotinete> livres) {
+        List<Mapa.Posicao> posicoes = new ArrayList<>();
+        int i = 0, j = 1;
+        for(; i < livres.size(); i++) {
+            for(; j < livres.size(); j++) {
+                if(calculaDistancia(livres.get(i).getPos(),livres.get(j).getPos()) < DISTANCIA) posicoes.add(livres.get(i).getPos());
+            }
+        }
+        return posicoes;
+    }
+
+
 
     /**
      * metodo q devolve a Pos de um possivel local B para recompensa

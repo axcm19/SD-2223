@@ -5,11 +5,12 @@ O mapa tem uma lista de posições que são compostas por um par(x, y) onde x, y
  */
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static java.lang.Math.abs;
 
-public class Mapa {
+public class Mapa extends Recompensa{
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -64,6 +65,7 @@ public class Mapa {
     public Map<Integer,Trotinete> reserva;
     private HashMap<Integer, Trotinete> trotinetes; // <ID, Trotinete>
     private HashMap<Integer, List<Posicao>> locais; // <Numero do sector, Lista de posiçoes do sector>    alterar o formato
+    public ReentrantLock lock_geral = new ReentrantLock();
     public ReentrantReadWriteLock lock_mapa = new ReentrantReadWriteLock();
 
     //inicia o mapa    nao sei se esta certo
@@ -225,6 +227,29 @@ public class Mapa {
         recompensas = String.valueOf(sb);
         return recompensas;
 
+    }
+
+    public List<Recompensa> geraRecompensa(List<Mapa.Posicao> A) {
+        // PARA O LOCAL A:
+        // iteracao pela lista de trotinetes -> ver as livres
+        // das livres -> uma a uma ver se tem trotinetes dentro do raio
+        // esta no raio : distancia de manhaten da coord da Trotinetes com pos A e depois B
+
+        // PARA O LOCAL B:
+        // gerar Pos random e ver se tem alguma dentro do raio
+
+        List<Recompensa> recompensas = new ArrayList<>();
+
+        for(Mapa.Posicao p : A) {
+            Posicao B = geraLocalB((List<Trotinete>) trotinetes.values());
+            Integer valor = formulaValor(p,B);
+            Recompensa r = new Recompensa(p,B,valor);
+            recompensas.add(r);
+        }
+
+
+
+        return recompensas;
     }
 
     //faltam métodos

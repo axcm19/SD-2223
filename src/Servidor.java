@@ -149,21 +149,20 @@ public class Servidor {
 
                             int reserva = -1;
                             String ret;
-                            locais.lock_mapa.readLock().lock();
+                            locais.lock_geral.lock();
                             try {
                                 reserva = locais.reservaTrotinete(Id);
                                 if(reserva >= 0) {
                                     ret = "Reserva de trotinete feita com sucesso. Codigo da reserva" +reserva;
-                                    c.send(frame.tag, "", String.valueOf(ret).getBytes());
-                                    c.send(frame.tag, "", String.valueOf(reserva).getBytes());
+                                    c.send(frame.tag, "", ret.getBytes());
                                 }
                                 else {
                                     ret = "Reserva não efetuada";
-                                    c.send(frame.tag, "", String.valueOf(ret).getBytes());
+                                    c.send(frame.tag, "", ret.getBytes());
                                 }
                             }
                             finally {
-                                locais.lock_mapa.readLock().unlock();
+                                locais.lock_geral.unlock();
                             }
                             System.out.println("Tentativa de reserva devolvida com sucesso");
                         }
