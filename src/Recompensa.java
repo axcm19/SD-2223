@@ -83,23 +83,12 @@ public class Recompensa {
     }
 
 
-
-
-
     /**
      * metodo que devolve a Pos de um possivel local A para a recompensa
      * @param livres   nao esquecer que eh so as trotinetes LIVRES!
      * @return
      */
-    public Mapa.Posicao geraLocalA(List<Trotinete> livres) {
-        int i = 0, j = 1;
-        for(; i < livres.size(); i++) {
-            for(; j < livres.size(); j++) {
-                if(calculaDistancia(livres.get(i).getPos(),livres.get(j).getPos()) < DISTANCIA) break;
-            }
-        }
-        return livres.get(i).getPos();
-    }
+
 
     public List<Mapa.Posicao> geraLocaisA(List<Trotinete> livres) {
         List<Mapa.Posicao> posicoes = new ArrayList<>();

@@ -142,10 +142,12 @@ public class Mapa extends Recompensa{
     }
 
     //calcula distancia entre dois pontos
+    /*
     public int calculaDistancia(Posicao p1,Posicao p2){
         int dist = abs(p1.coord_x - p2.coord_x) + abs(p1.coord_y - p2.coord_y);
         return dist;
     }
+    */
 
     public boolean comparaPosicoes(Posicao p1,Posicao p2){
         if(p1.coord_x == p2.coord_x)
@@ -204,32 +206,28 @@ public class Mapa extends Recompensa{
 
     public String lista_recompensas(){
         List<Trotinete> trotinetes_lista = new ArrayList<>();
+        List<Recompensa> recompensas_lista = new ArrayList<>();
         String recompensas  = "";
         StringBuilder sb = new StringBuilder();
         sb.append("\nLista Recompensas: \n");
-        Recompensa r = new Recompensa();
 
         // cria lista de trotinetes a partir do Map
         for(int id_trot : this.trotinetes.keySet()){
-            trotinetes_lista.add(this.trotinetes.get(id_trot));
+            if(this.trotinetes.get(id_trot).ocupada) trotinetes_lista.add(this.trotinetes.get(id_trot)); // so trotinetes LIVRES
         }
 
-        Mapa.Posicao posA = new Mapa.Posicao();
-        Mapa.Posicao posB = new Mapa.Posicao();
+        recompensas_lista = geraRecompensas(geraLocaisA(trotinetes_lista));
 
-        posA = r.geraLocalA(trotinetes_lista);
-        posB = r.geraLocalB(trotinetes_lista);
+        for(Recompensa r : recompensas_lista)
+            sb.append(r.toString());
 
-        r = r.geraRecompensa(posA, posB);
-
-        sb.append(r.toString());
 
         recompensas = String.valueOf(sb);
-        return recompensas;
 
+        return recompensas;
     }
 
-    public List<Recompensa> geraRecompensa(List<Mapa.Posicao> A) {
+    public List<Recompensa> geraRecompensas(List<Mapa.Posicao> A) {
         // PARA O LOCAL A:
         // iteracao pela lista de trotinetes -> ver as livres
         // das livres -> uma a uma ver se tem trotinetes dentro do raio
@@ -241,18 +239,17 @@ public class Mapa extends Recompensa{
         List<Recompensa> recompensas = new ArrayList<>();
 
         for(Mapa.Posicao p : A) {
+
             Posicao B = geraLocalB((List<Trotinete>) trotinetes.values());
             Integer valor = formulaValor(p,B);
+
             Recompensa r = new Recompensa(p,B,valor);
             recompensas.add(r);
         }
 
-
-
         return recompensas;
     }
 
-    //faltam métodos
 
 
 }

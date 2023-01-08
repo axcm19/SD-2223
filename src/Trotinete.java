@@ -48,5 +48,6 @@ public class Trotinete {
     public void setPos(Mapa.Posicao pos) {
         this.pos = pos;
     }
+
 }
 
