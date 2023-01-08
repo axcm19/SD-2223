@@ -149,12 +149,11 @@ public class Servidor {
 
                             int reserva = -1;
                             String ret;
-
                             locais.lock_mapa.readLock().lock();
                             try {
                                 reserva = locais.reservaTrotinete(Id);
                                 if(reserva >= 0) {
-                                    ret = "Reserva de trotinete de id " +reserva+" feita com sucesso";
+                                    ret = "Reserva de trotinete feita com sucesso. Codigo da reserva" +reserva;
                                     c.send(frame.tag, "", String.valueOf(ret).getBytes());
                                     c.send(frame.tag, "", String.valueOf(reserva).getBytes());
                                 }
@@ -173,11 +172,11 @@ public class Servidor {
 
                         // thread com tag 6 é para deslocar uma trotinete dado o id da trotinete e a posicao
                         else if (frame.tag == 6) {
-                            System.out.println("Reservar uma trotinete");
+                            System.out.println("Deslocar uma trotinete");
 
                             // retirar a informação contina na frame
                             String[] info = new String(frame.data).split(" ");
-                            int id = Integer.parseInt(info[0]);
+                            int codigo = Integer.parseInt(info[0]);
                             Mapa.Posicao pos = new Mapa.Posicao(Integer.parseInt(info[1]), Integer.parseInt(info[2]));
 
                             int ret = -1;
@@ -185,7 +184,7 @@ public class Servidor {
 
                             locais.lock_mapa.readLock().lock();
                             try {
-                                ret = locais.desloca(id,pos);
+                                ret = locais.desloca(codigo,pos);
                                 if(ret >= 0) {
                                     ret_S = "Deslocaçao de trotinete feita com sucesso";
                                     c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
@@ -200,6 +199,37 @@ public class Servidor {
                             }
                             System.out.println("Tentativa de deslocamento devolvida com sucesso");
                         }
+
+                        //--------------------------------------------------------------------------------------
+
+                        // thread com tag 4 é para listar as recompensas naquele preciso momento
+                        else if (frame.tag == 4) {
+                            System.out.println("Listar recompensas");
+
+                            // retirar a informação contina na frame
+                            String info = new String(frame.data);
+
+                            String recompensas_atuais = "";
+
+                            locais.lock_mapa.readLock().lock();
+                            try {
+                                if(info.equals("Listar recompensas")) {
+                                    recompensas_atuais = locais.lista_recompensas();
+                                    c.send(frame.tag, "", recompensas_atuais.getBytes());
+                                }
+                                else{
+                                    recompensas_atuais = "Erro inesperado";
+                                    c.send(frame.tag, "", recompensas_atuais.getBytes());
+                                }
+                            }
+                            finally {
+                                locais.lock_mapa.readLock().unlock();
+                            }
+                            System.out.println("Listagem devolvida com sucesso");
+
+                        }
+
+
 
                         //--------------------------------------------------------------------------------------
 

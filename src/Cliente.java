@@ -155,24 +155,46 @@ public class Cliente {
 
                     }
                     break;
+                case "3":
+                    while(true) {
+                        System.out.print("--- Listar recompensas atuais ---\n");
+
+                        try {
+                            m.send(4, username, "Listar recompensas".getBytes());
+
+                            String response = new String(m.receive(4));
+                            System.out.println("\n" + response + "\n");
+
+                            break;
+                        }
+                        catch (IllegalStateException e){
+                            System.out.println("\nErro");
+                        }
+
+                    }
+                    break;
+
+
+                //case "4":
+
                 case "5":
                     while(true){
                         System.out.print("--- Deslocar uma trotinete ---\n"
                                 + "\n"
-                                + "Introduza o id da trotinete que quer deslocar: ");
-                        System.out.print("\nId ---> ");
-                        String id = input.readLine();
+                                + "Introduza o codigo da reserva: ");
+                        System.out.print("\nCodigo ---> ");
+                        String codigo = input.readLine();
                         System.out.println("Introduza a posição onde vai deslocar");
                         System.out.print("\nCoordenada X ---> ");
                         String coor_x = input.readLine();
                         System.out.print("\nCoordenada Y ---> ");
                         String coor_y = input.readLine();
                         try {
-                            int Id = Integer.parseInt(id);
+                            int Codigo = Integer.parseInt(codigo);
                             Mapa.Posicao pos = new Mapa.Posicao();
                             pos.coord_x = Integer.parseInt(coor_x);
                             pos.coord_y = Integer.parseInt(coor_y);
-                            m.send(6, username, String.format("%d %d %d",Id, pos.coord_x, pos.coord_y).getBytes());
+                            m.send(6, username, String.format("%d %d %d",Codigo, pos.coord_x, pos.coord_y).getBytes());
 
                             String response = new String(m.receive(6));
                             System.out.println("\n" + response + "\n");

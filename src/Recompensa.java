@@ -1,5 +1,5 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 import java.util.List;
@@ -11,6 +11,12 @@ public class Recompensa {
     private Integer valor;
 
     static final Integer DISTANCIA = 2;   // static final ?
+
+    public Recompensa() {
+        this.posInicial = new Mapa.Posicao();
+        this.posFinal = new Mapa.Posicao();
+        this.valor = 0;
+    }
 
     public Recompensa(Mapa.Posicao posInicial, Mapa.Posicao posFinal, Integer valor) {
         this.posInicial = posInicial;
@@ -78,7 +84,7 @@ public class Recompensa {
 
 
 
-    public Recompensa geraRecompensa(List<Trotinete> trotinetes, Mapa.Posicao A, Mapa.Posicao B) {
+    public Recompensa geraRecompensa(Mapa.Posicao A, Mapa.Posicao B) {
         // PARA O LOCAL A:
         // iteracao pela lista de trotinetes -> ver as livres
         // das livres -> uma a uma ver se tem trotinetes dentro do raio
@@ -105,7 +111,7 @@ public class Recompensa {
                 if(calculaDistancia(livres.get(i).getPos(),livres.get(j).getPos()) < DISTANCIA) break;
             }
         }
-        return livres.get(j).getPos();
+        return livres.get(i).getPos();
     }
 
     /**
@@ -139,10 +145,10 @@ public class Recompensa {
     @Override
     public String toString() {
         return "Recompensa{" +
-                "posInicial=" + posInicial +
-                ", posFinal=" + posFinal +
-                ", valor=" + valor +
-                '}';
+                "posInicial=" + "(" + this.posInicial.coord_x + "," +this.posInicial.coord_y + ")" +
+                ", posFinal=" + "(" + this.posFinal.coord_x + "," +this.posFinal.coord_y + ")" +
+                ", valor=" + this.valor +
+                "}";
     }
 
 

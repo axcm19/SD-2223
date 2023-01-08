@@ -4,10 +4,7 @@ Classe que serve para representar o mapa onde as trotinetes podem circular.
 O mapa tem uma lista de posições que são compostas por um par(x, y) onde x, y são inteiros.
  */
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static java.lang.Math.abs;
@@ -64,6 +61,7 @@ public class Mapa {
     private int sector = 0;
     private int numTroti = 6; // por enquanto só 6 trotinetes
 
+    public Map<Integer,Trotinete> reserva;
     private HashMap<Integer, Trotinete> trotinetes; // <ID, Trotinete>
     private HashMap<Integer, List<Posicao>> locais; // <Numero do sector, Lista de posiçoes do sector>    alterar o formato
     public ReentrantReadWriteLock lock_mapa = new ReentrantReadWriteLock();
@@ -99,6 +97,15 @@ public class Mapa {
         Trotinete t4 = new Trotinete(4, false, 15,9 );
         Trotinete t5 = new Trotinete(5, true, 16,7 );
         Trotinete t6 = new Trotinete(6, true, 4,20 );
+        Trotinete t7 = new Trotinete(7, true, 0,2 );
+        Trotinete t8 = new Trotinete(8, false, 0,1 );
+        Trotinete t9 = new Trotinete(9, false, 1,0 );
+        Trotinete t10 = new Trotinete(10, true, 4,20 );
+        Trotinete t11 = new Trotinete(11, false, 5,8 );
+        Trotinete t12 = new Trotinete(12, false, 3,10 );
+        Trotinete t13 = new Trotinete(13, true, 4,2 );
+        Trotinete t14 = new Trotinete(14, true, 3,5 );
+        Trotinete t15 = new Trotinete(15, true, 2,6 );
 
 
         this.trotinetes = new HashMap<>();
@@ -108,11 +115,28 @@ public class Mapa {
         trotinetes.put(t4.id, t4);
         trotinetes.put(t5.id, t5);
         trotinetes.put(t6.id, t6);
+        trotinetes.put(t7.id, t7);
+        trotinetes.put(t8.id, t8);
+        trotinetes.put(t9.id, t9);
+        trotinetes.put(t10.id, t10);
+        trotinetes.put(t11.id, t11);
+        trotinetes.put(t12.id, t12);
+        trotinetes.put(t13.id, t13);
+        trotinetes.put(t14.id, t14);
+        trotinetes.put(t15.id, t15);
 
         Mapa mapa = new Mapa();
         mapa.locais = this.locais;
         mapa.trotinetes = this.trotinetes;
         return mapa;
+    }
+
+    public Map<Integer, Trotinete> getTrotinetes(){
+        Map<Integer, Trotinete> tro = new HashMap<>();
+        for(int k : this.trotinetes.keySet()){
+            tro.put(k, this.trotinetes.get(k));
+        }
+        return tro;
     }
 
     //calcula distancia entre dois pontos
@@ -130,22 +154,27 @@ public class Mapa {
     //pegar posiçao do user e tirar do mapa
     //mudar para os hashmap
     public int reservaTrotinete(int Id){
+        Random rand = new Random();
         for(int ID : trotinetes.keySet()){
             Trotinete t = trotinetes.get(ID);
             if(Id == t.id){
                 t.ocupada = false;
-                return t.id;
+                int codigo = rand.nextInt(100);
+                reserva.put(codigo,t);
+                return codigo;
             }
         }
         return -1;
     }
 
-    public int desloca(int Id,Posicao p){
-        for(int ID : trotinetes.keySet()){
-            Trotinete t = trotinetes.get(ID);
-            if(Id == t.id){
-                t.pos = p;
-                t.ocupada = true;
+    public int desloca(int codigo,Posicao p){
+        Trotinete t = reserva.get(codigo);
+        for (int ID : trotinetes.keySet()){
+            Trotinete aux = trotinetes.get(ID);
+            if(t.id == aux.id){
+                reserva.remove(codigo);
+                aux.ocupada = true;
+                aux.pos = p;
                 return 1;
             }
         }
@@ -169,6 +198,33 @@ public class Mapa {
         }
         livres = String.valueOf(sb);
         return livres;
+    }
+
+    public String lista_recompensas(){
+        List<Trotinete> trotinetes_lista = new ArrayList<>();
+        String recompensas  = "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nLista Recompensas: \n");
+        Recompensa r = new Recompensa();
+
+        // cria lista de trotinetes a partir do Map
+        for(int id_trot : this.trotinetes.keySet()){
+            trotinetes_lista.add(this.trotinetes.get(id_trot));
+        }
+
+        Mapa.Posicao posA = new Mapa.Posicao();
+        Mapa.Posicao posB = new Mapa.Posicao();
+
+        posA = r.geraLocalA(trotinetes_lista);
+        posB = r.geraLocalB(trotinetes_lista);
+
+        r = r.geraRecompensa(posA, posB);
+
+        sb.append(r.toString());
+
+        recompensas = String.valueOf(sb);
+        return recompensas;
+
     }
 
     //faltam métodos
