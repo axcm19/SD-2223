@@ -182,7 +182,7 @@ public class Servidor {
                                 int ret = -1;
                                 String ret_S;
 
-                                locais.lock_mapa.readLock().lock();
+                                locais.lock_geral.lock();
                                 try {
                                     ret = locais.desloca(codigo, pos);
                                     if (ret >= 0) {
@@ -193,7 +193,7 @@ public class Servidor {
                                         c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
                                     }
                                 } finally {
-                                    locais.lock_mapa.readLock().unlock();
+                                    locais.lock_geral.unlock();
                                 }
                                 System.out.println("Tentativa de deslocamento devolvida com sucesso");
                             }
