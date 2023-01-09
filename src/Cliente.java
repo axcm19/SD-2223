@@ -206,7 +206,7 @@ public class Cliente {
 
                                 fim = LocalTime.now();
                                 long tempo = java.time.Duration.between(inicio, fim).getSeconds();
-                                double preco = tempo / 200.0;
+                                double preco = tempo / 20.0;
                                 System.out.println("Preço da viagem: " + preco + " euros.\n");
                             }
                             break;
