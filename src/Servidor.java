@@ -153,7 +153,7 @@ public class Servidor {
                             try {
                                 reserva = locais.reservaTrotinete(Id);
                                 if(reserva >= 0) {
-                                    ret = "Reserva de trotinete feita com sucesso. Codigo da reserva" +reserva;
+                                    ret = "Reserva de trotinete feita com sucesso. Codigo da reserva " +reserva;
                                     c.send(frame.tag, "", ret.getBytes());
                                 }
                                 else {
@@ -176,27 +176,33 @@ public class Servidor {
                             // retirar a informação contina na frame
                             String[] info = new String(frame.data).split(" ");
                             int codigo = Integer.parseInt(info[0]);
-                            Mapa.Posicao pos = new Mapa.Posicao(Integer.parseInt(info[1]), Integer.parseInt(info[2]));
+                            if(locais.verificaReserva(codigo)==1){
+                                Mapa.Posicao pos = new Mapa.Posicao(Integer.parseInt(info[1]), Integer.parseInt(info[2]));
 
-                            int ret = -1;
-                            String ret_S;
+                                int ret = -1;
+                                String ret_S;
 
-                            locais.lock_mapa.readLock().lock();
-                            try {
-                                ret = locais.desloca(codigo,pos);
-                                if(ret >= 0) {
-                                    ret_S = "Deslocaçao de trotinete feita com sucesso";
-                                    c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
+                                locais.lock_mapa.readLock().lock();
+                                try {
+                                    ret = locais.desloca(codigo, pos);
+                                    if (ret >= 0) {
+                                        ret_S = "Deslocaçao de trotinete feita com sucesso";
+                                        c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
+                                    } else {
+                                        ret_S = "Deslocamento não efetuada";
+                                        c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
+                                    }
+                                } finally {
+                                    locais.lock_mapa.readLock().unlock();
                                 }
-                                else {
-                                    ret_S = "Deslocamento não efetuada";
-                                    c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
-                                }
+                                System.out.println("Tentativa de deslocamento devolvida com sucesso");
                             }
-                            finally {
-                                locais.lock_mapa.readLock().unlock();
+                            else{
+                                String ret_S;
+                                ret_S = "Erro: codigo invalido";
+                                c.send(frame.tag, "", String.valueOf(ret_S).getBytes());
+                                System.out.println("Tentativa de deslocamento devolvida com sucesso");
                             }
-                            System.out.println("Tentativa de deslocamento devolvida com sucesso");
                         }
 
                         //--------------------------------------------------------------------------------------

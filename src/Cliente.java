@@ -144,7 +144,6 @@ public class Cliente {
 
                             String response = new String(m.receive(3));
                             System.out.println("\n" + response + "\n");
-                            id_trotinete = Integer.parseInt(response);
                             inicio = LocalTime.now();
 
                             break;
@@ -186,46 +185,39 @@ public class Cliente {
                         System.out.print("\nCodigo ---> ");
                         int codigo = Integer.parseInt(input.readLine());
 
-                        if(codigo == id_trotinete) {
+                        System.out.println("Introduza a posição onde vai deslocar");
+                        System.out.print("\nCoordenada X ---> ");
+                        String coor_x = input.readLine();
+                        System.out.print("\nCoordenada Y ---> ");
+                        String coor_y = input.readLine();
+                        try {
+                            int codigo_reserva = codigo;
+                            Mapa.Posicao pos = new Mapa.Posicao();
+                            pos.coord_x = Integer.parseInt(coor_x);
+                            pos.coord_y = Integer.parseInt(coor_y);
+                            m.send(6, username, String.format("%d %d %d", codigo_reserva, pos.coord_x, pos.coord_y).getBytes());
 
-                            System.out.println("Introduza a posição onde vai deslocar");
-                            System.out.print("\nCoordenada X ---> ");
-                            String coor_x = input.readLine();
-                            System.out.print("\nCoordenada Y ---> ");
-                            String coor_y = input.readLine();
-                            try {
-                                int codigo_reserva = codigo;
-                                Mapa.Posicao pos = new Mapa.Posicao();
-                                pos.coord_x = Integer.parseInt(coor_x);
-                                pos.coord_y = Integer.parseInt(coor_y);
-                                m.send(6, username, String.format("%d %d %d", codigo_reserva, pos.coord_x, pos.coord_y).getBytes());
-
-                                String response = new String(m.receive(6));
+                            String response = new String(m.receive(6));
+                            if(response.equals("Erro: codigo invalido")) {
+                                System.out.println("\n" + response + "\n");
+                                break;
+                            } else{
                                 System.out.println("\n" + response + "\n");
 
                                 fim = LocalTime.now();
                                 long tempo = java.time.Duration.between(inicio, fim).getSeconds();
-                                double preco = tempo/200.0;
-                                System.out.println("Preço da viagem: " + preco+" euros.\n");
-
-                                break;
-                            } catch (IllegalStateException e) {
-                                System.out.println("\nErro");
+                                double preco = tempo / 200.0;
+                                System.out.println("Preço da viagem: " + preco + " euros.\n");
                             }
+                            break;
+                        } catch (IllegalStateException e) {
+                            System.out.println("\nErro");
                         }
-                        else{
-                            System.out.println("Erro");
-                        }
-
                     }
                     break;
             }
         }
-
-
         m.close();
-
-
     }
 
 }

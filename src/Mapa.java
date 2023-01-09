@@ -57,12 +57,8 @@ public class Mapa extends Recompensa{
 
     // tamanho do mapa = N*N
     private int N = 20;
-    private int nsector = 16;   // 16 sectores
-    private int tamanhosector = 5;  // 5*5 posiçoes
-    private int sector = 0;
-    private int numTroti = 6; // por enquanto só 6 trotinetes
 
-    public Map<Integer,Trotinete> reserva;
+    public HashMap<Integer,Trotinete> reserva;
     private HashMap<Integer, Trotinete> trotinetes; // <ID, Trotinete>
     private HashMap<Integer, List<Posicao>> locais; // <Numero do sector, Lista de posiçoes do sector>    alterar o formato
     public ReentrantLock lock_geral = new ReentrantLock();
@@ -109,7 +105,7 @@ public class Mapa extends Recompensa{
         Trotinete t14 = new Trotinete(14, true, 3,5 );
         Trotinete t15 = new Trotinete(15, true, 2,6 );
 
-
+        this.reserva = new HashMap<>();
         this.trotinetes = new HashMap<>();
         trotinetes.put(t1.id, t1);
         trotinetes.put(t2.id, t2);
@@ -159,12 +155,21 @@ public class Mapa extends Recompensa{
     //mudar para os hashmap
     public int reservaTrotinete(int Id){
         Random rand = new Random();
+        Trotinete t = new Trotinete();
         for(int ID : trotinetes.keySet()){
-            Trotinete t = trotinetes.get(ID);
+            t = trotinetes.get(ID);
             if(Id == t.id){
                 t.ocupada = false;
-                int codigo = rand.nextInt(100);
-                reserva.put(codigo,t);
+                int codigo = 0;
+                boolean flag = true;
+                while(flag) {
+                    codigo = rand.nextInt(100);
+                    if(reserva.containsKey(codigo)) ;
+                    else {
+                        reserva.put(codigo, t);
+                        flag = false;
+                    }
+                }
                 return codigo;
             }
         }
@@ -183,6 +188,11 @@ public class Mapa extends Recompensa{
             }
         }
         return -1;
+    }
+
+    public int verificaReserva(int codigo){
+        if(reserva.containsKey(codigo)) return 1;
+        else return -1;
     }
 
     //faz a listagem de todas as trotinetes livres
