@@ -1,6 +1,8 @@
-# SD - grupo 30
+# Sistemas Distribuidos - 2022/2023
 
-    Afonso Xavier Cardoso Marques 94940
-    Vicente de Carvalho Castro 91677
-    José Diogo Lopes Faria 95255
-    Pedro Calheno Pinto 87983
+Grupo 30:
+
+- Afonso Xavier Cardoso Marques :: a94940
+- Vicente de Carvalho Castro :: a91677
+- José Diogo Lopes Faria :: a95255
+- Pedro Calheno Pinto :: a87983
